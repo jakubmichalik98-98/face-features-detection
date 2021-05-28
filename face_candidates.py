@@ -28,5 +28,5 @@ if __name__ == '__main__':
     mask = create_binary_mask(img1_rgb)
     img_to_show = fit_ellipse(mask, img1_rgb)
     plt.subplot(1, 1, 1)
-    plt.imshow(img_to_show, cmap="gray")
+    plt.imshow(img_to_show)
     plt.show()
