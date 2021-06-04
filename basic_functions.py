@@ -19,7 +19,7 @@ def show_images(images: list, columns: int, rows: int):
     :param rows: How much rows in subplot
     :return: Subplot with images
     """
-    fig = plt.figure(figsize=(4 * columns, 4 * rows))
+    fig = plt.figure(figsize=(columns, rows))
     for i in range(1, len(images) + 1):
         fig.add_subplot(rows, columns, i)
         plt.imshow(images[i - 1])
