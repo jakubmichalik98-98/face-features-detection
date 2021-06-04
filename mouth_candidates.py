@@ -66,5 +66,5 @@ if __name__ == '__main__':
     img_rgb = cv.cvtColor(img, cv.COLOR_BGR2RGB)
     luminance_correction(img_rgb)
     imgYCrCb = cv.cvtColor(img_rgb, cv.COLOR_RGB2YCrCb)
-    mouth_map_c = create_mouth_map_Fg(imgYCrCb)
-    show_images([imgYCrCb, mouth_map_c ], 2, 1)
+    mouth_map_Fg = create_mouth_map_Fg(imgYCrCb)
+    show_images([imgYCrCb, mouth_map_Fg ], 2, 1)
