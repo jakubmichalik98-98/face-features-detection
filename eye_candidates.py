@@ -33,9 +33,9 @@ def create_eye_map_y(imgYCrCb):
     :return: Eye map from luminance component
     """
     processed_img = deepcopy(imgYCrCb)
-    str_el = cv.getStructuringElement(cv.MORPH_ELLIPSE, (5, 5))
+    str_el = cv.getStructuringElement(cv.MORPH_ELLIPSE, (3, 3))
     y_dilation = cv.dilate(processed_img[:, :, 0], str_el)
-    y_erosion = cv.dilate(processed_img[:, :, 0], str_el)
+    y_erosion = cv.erode(processed_img[:, :, 0], str_el)
     h = imgYCrCb.shape[0]
     w = imgYCrCb.shape[1]
     for i in range(h):
