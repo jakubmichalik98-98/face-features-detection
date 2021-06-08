@@ -1,4 +1,5 @@
 import cv2 as cv
+import numpy as np
 from basic_functions import read_image, show_images
 from luminance_correction import luminance_correction
 from copy import deepcopy
@@ -11,13 +12,24 @@ def create_eye_map_c(imgYCrCb):
     :return: Eye map from chrominance components
     """
     processed_img = deepcopy(imgYCrCb)
-    final_img = deepcopy(imgYCrCb)
     h = imgYCrCb.shape[0]
     w = imgYCrCb.shape[1]
+    cb_sqr = np.zeros(imgYCrCb.shape)
+    cb_over_cr = np.zeros(imgYCrCb.shape)
+    cr_neg_sqr = np.zeros(imgYCrCb.shape)
     for i in range(h):
         for j in range(w):
-            processed_img[i, j] = ((imgYCrCb[i, j, 2] ** 2) / 255 + ((255 - imgYCrCb[i, j, 1]) ** 2) / 255 + (
-                    imgYCrCb[i, j, 2] / imgYCrCb[i, j, 1]) / 255) / 3
+            cb_sqr[i, j] = imgYCrCb[i, j, 2] ** 2
+            cb_over_cr[i, j] = imgYCrCb[i, j, 2] / imgYCrCb[i, j, 1]
+            cr_neg_sqr[i, j] = (255 - imgYCrCb[i, j, 1]) ** 2
+    cv.normalize(cb_sqr, cb_sqr, 0, 255, cv.NORM_MINMAX)
+    cv.normalize(cb_over_cr, cb_over_cr, 0, 255, cv.NORM_MINMAX)
+    cv.normalize(cr_neg_sqr, cr_neg_sqr, 0, 255, cv.NORM_MINMAX)
+
+    for i in range(h):
+        for j in range(w):
+            processed_img[i, j] = (cb_sqr[i, j] + cr_neg_sqr[i, j] +
+                                   cb_over_cr[i, j]) / 3
     processed_img[:, :, 0] = cv.equalizeHist(processed_img[:, :, 0])
     processed_img[:, :, 1] = cv.equalizeHist(processed_img[:, :, 1])
     processed_img[:, :, 2] = cv.equalizeHist(processed_img[:, :, 2])
