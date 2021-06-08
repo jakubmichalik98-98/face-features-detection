@@ -20,17 +20,21 @@ def create_mouth_map_Fg(imgYCrCb):
 
     for i in range(h):
         for j in range(w):
-            cr_sqr[i,j] = imgYCrCb[i, j, 1] ** 2
-            cr_over_cb[i, j] = imgYCrCb[i, j, 1]  / imgYCrCb[i, j, 2]
-    
+            cr_sqr[i, j] = imgYCrCb[i, j, 1] ** 2
+            cr_over_cb[i, j] = imgYCrCb[i, j, 1] / imgYCrCb[i, j, 2]
+
     cv.normalize(cr_sqr, cr_sqr, 0, 255, cv.NORM_MINMAX)
     cv.normalize(cr_over_cb, cr_over_cb, 0, 255, cv.NORM_MINMAX)
 
     for i in range(h):
         for j in range(w):
-            processed_img[i, j] = cr_sqr[i, j]  * (cr_sqr[i, j] - eta * cr_over_cb[i, j]) ** 2
+            # processed_img[i, j] = cr_sqr[i, j]  * (cr_sqr[i, j] - eta * cr_over_cb[i, j]) ** 2
+            # processed_img[i, j] = cr_sqr[i, j]
+            # processed_img[i, j] = cr_over_cb[i, j]
+            processed_img[i, j] = np.abs(cr_sqr[i, j] - eta * cr_over_cb[i, j])
 
     return processed_img
+
 
 def calculate_eta(imgYCrCb):
     """
@@ -40,7 +44,7 @@ def calculate_eta(imgYCrCb):
     """
     h = imgYCrCb.shape[0]
     w = imgYCrCb.shape[1]
-    n = (h + 1) * (w + 1) # "Fg is the face mask with n points"
+    n = (h + 1) * (w + 1)  # "Fg is the face mask with n points"
     cr_sqr = np.zeros(imgYCrCb.shape)
     cr_over_cb = np.zeros(imgYCrCb.shape)
 
@@ -51,20 +55,21 @@ def calculate_eta(imgYCrCb):
 
     cv.normalize(cr_sqr, cr_sqr, 0, 255, cv.NORM_MINMAX)
     cv.normalize(cr_over_cb, cr_over_cb, 0, 255, cv.NORM_MINMAX)
-    
+
     cr_sqr_sum = np.sum(cr_sqr)
     cr_over_cb_sum = np.sum(cr_over_cb)
 
-    eta = 0.95 * ( cr_sqr_sum / n ) / ( cr_over_cb_sum / n )
+    eta = 0.95 * (cr_sqr_sum / n) / (cr_over_cb_sum / n)
     return eta
+
 
 if __name__ == '__main__':
     """
     Only for testing in final version it must be moved to main.py file
     """
-    img = read_image("D:/AAA/Studia/Informatics/1semestr/CVaPR/Project/data/26-5m.jpg")
+    img = read_image("data/37-1m.bmp")
     img_rgb = cv.cvtColor(img, cv.COLOR_BGR2RGB)
     luminance_correction(img_rgb)
     imgYCrCb = cv.cvtColor(img_rgb, cv.COLOR_RGB2YCrCb)
     mouth_map_Fg = create_mouth_map_Fg(imgYCrCb)
-    show_images([imgYCrCb, mouth_map_Fg ], 2, 1)
+    show_images([imgYCrCb, mouth_map_Fg], 2, 1)
