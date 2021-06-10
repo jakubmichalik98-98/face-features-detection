@@ -55,6 +55,14 @@ def create_eye_map_y(imgYCrCb):
             processed_img[i, j] = 10 * (y_dilation[i, j] / (1 + y_erosion[i, j] / 10))
     return processed_img
 
+def final_c_y_mask(eye_map_c, eye_map_y):
+    """
+    Function responsible for joining two eye maps together
+    :param eye_map_c: C eye map, result of function create_eye_map_c
+    :param eye_map_c: Y eye map, result of function create_eye_map_y
+    :return: Joined eye maps
+    """
+    return cv.bitwise_and(eye_map_c, eye_map_y)
 
 if __name__ == '__main__':
     """
@@ -66,5 +74,5 @@ if __name__ == '__main__':
     imgYCrCb = cv.cvtColor(img_rgb, cv.COLOR_RGB2YCrCb)
     eye_map_c = create_eye_map_c(imgYCrCb)
     eye_map_y = create_eye_map_y(imgYCrCb)
-    final_mask = cv.bitwise_and(eye_map_c, eye_map_y)
+    final_mask = final_c_y_mask(eye_map_c, eye_map_y)
     show_images([imgYCrCb, eye_map_c, eye_map_y, final_mask], 4, 1)
