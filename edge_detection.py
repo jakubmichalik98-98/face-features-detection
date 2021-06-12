@@ -16,8 +16,3 @@ if __name__ == '__main__':
     eye_map_c = create_eye_map_c(imgYCrCb)
     eye_map_y = create_eye_map_y(imgYCrCb)
     eye_mask = final_c_y_mask(eye_map_c, eye_map_y)
-    edges = cv.Canny(eye_mask, 100, 200)
-    plt.subplot(1, 1, 1)
-    plt.imshow(edges, cmap='gray')
-    plt.show()
-    # show_images([imgYCrCb, eye_mask], 2, 1)
