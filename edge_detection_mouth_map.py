@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 from face_candidates import fit_ellipse, create_binary_mask
 
 if __name__ == '__main__':
-    img = read_image("data/38-1m.bmp")
+    img = read_image("data/23-1m.bmp")
     img_rgb = cv.cvtColor(img, cv.COLOR_BGR2RGB)
     luminance_correction(img_rgb)
     mask = create_binary_mask(img_rgb)
@@ -17,8 +17,7 @@ if __name__ == '__main__':
     mouth_map_rgb = cv.cvtColor(mouth_map, cv.COLOR_YCrCb2RGB)
     mouth_map_gray = cv.cvtColor(mouth_map_rgb, cv.COLOR_RGB2GRAY)
     ret, th = cv.threshold(mouth_map_gray, 0, 255, cv.THRESH_BINARY + cv.THRESH_OTSU)
-    th = cv.bitwise_not(th)
-    # show_images([mouth_map, th], 2, 1)
+    # th = cv.bitwise_not(th)
     plt.subplot(1, 2, 1)
     plt.imshow(mouth_map, cmap="gray")
     plt.subplot(1, 2, 2)

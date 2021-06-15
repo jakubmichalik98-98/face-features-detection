@@ -17,6 +17,7 @@ def create_mouth_map_Fg(imgYCrCb):
     eta = calculate_eta(imgYCrCb)
     cr_sqr = np.zeros(imgYCrCb.shape)
     cr_over_cb = np.zeros(imgYCrCb.shape)
+    tst_array = np.ndarray(shape=(480, 640, 3), dtype=float)
 
     for i in range(h):
         for j in range(w):
@@ -28,10 +29,11 @@ def create_mouth_map_Fg(imgYCrCb):
 
     for i in range(h):
         for j in range(w):
-            # processed_img[i, j] = cr_sqr[i, j]  * (cr_sqr[i, j] - eta * cr_over_cb[i, j]) ** 2
-            # processed_img[i, j] = cr_sqr[i, j]
-            # processed_img[i, j] = cr_over_cb[i, j]
-            processed_img[i, j] = np.abs(cr_sqr[i, j] - eta * cr_over_cb[i, j])
+            tst_array[i, j] = cr_sqr[i, j] * (cr_sqr[i, j] - eta * cr_over_cb[i, j]) ** 2
+    cv.normalize(tst_array, tst_array, 0, 255, cv.NORM_MINMAX)
+    for i in range(h):
+        for j in range(w):
+            processed_img[i, j] = tst_array[i, j]
 
     return processed_img
 
@@ -67,7 +69,7 @@ if __name__ == '__main__':
     """
     Only for testing in final version it must be moved to main.py file
     """
-    img = read_image("data/37-1m.bmp")
+    img = read_image("data/23-1m.bmp")
     img_rgb = cv.cvtColor(img, cv.COLOR_BGR2RGB)
     luminance_correction(img_rgb)
     imgYCrCb = cv.cvtColor(img_rgb, cv.COLOR_RGB2YCrCb)
